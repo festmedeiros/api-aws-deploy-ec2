@@ -255,6 +255,6 @@ jobs:
             docker pull $IMAGE
 
             echo "Subindo novo container... $REPO_NAME $IMAGE"
-            docker run -d -p 3000:80 --name $REPO_NAME $IMAGE
+            docker run -d -p 3000:3000 --name $REPO_NAME $IMAGE
 
             echo "Container iniciado com sucesso na porta 3000 ..."
