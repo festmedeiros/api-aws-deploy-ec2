@@ -248,6 +248,19 @@ jobs:
               docker rm $REPO_NAME
             fi
 
+            echo "Verificando containers na porta 3000"
+            CONTAINERS_PORT_3000=$(docker ps -q --filter "publish=3000")
+
+            if [ -n "$CONTAINERS_PORT_3000" ]; then
+              echo "Encontrado algum container rodando na porta 3000:"
+              docker ps --filter "publish=3000" --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}"
+              echo "Parando e removendo todos os containers na porta 3000"
+              docker ps -q --filter "publish=3000" | xargs -r docker stop
+              docker ps -a -q --filter "publish=3000" | xargs -r docker rm
+            else
+              echo "Nenhum container ocupando a porta 3000."
+            fi
+
             echo "Removendo imagem local antiga, se existir..."
             docker rmi -f "$IMAGE" || echo "Nenhuma imagem antiga encontrada com a tag: $IMAGE"
 
