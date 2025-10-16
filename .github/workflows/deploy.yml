@@ -153,6 +153,11 @@ jobs:
       #      </Row>' src/App.js
 #
       #    echo "Versão $VERSION inserida no frontend"
+      
+      - name: Atualizar versão no package.json
+        if: steps.version.outputs.should_deploy == 'true'
+        run: |
+          npm version $new_version --no-git-tag-version
 
       - name: Criar imagem docker
         if: steps.version.outputs.should_deploy == 'true'
@@ -167,11 +172,6 @@ jobs:
           echo "Fazendo push da imagem Docker para o Docker Hub ${{ secrets.DOCKERHUB_USERNAME }}/$REPO_NAME:$new_version" 
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/$REPO_NAME:$new_version
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/$REPO_NAME:latest
-      
-      - name: Atualizar versão no package.json
-        if: steps.version.outputs.should_deploy == 'true'
-        run: |
-          npm version $new_version --no-git-tag-version
           
       - name: Commit e push
         if: steps.version.outputs.should_deploy == 'true'
